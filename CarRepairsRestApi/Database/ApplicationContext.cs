@@ -1,5 +1,7 @@
 ﻿using CarRepairsRestApi.Models;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace CarRepairsRestApi.Database
 {
