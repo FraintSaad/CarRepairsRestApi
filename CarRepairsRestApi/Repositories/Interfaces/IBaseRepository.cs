@@ -2,6 +2,7 @@
 
 namespace CarRepairsRestApi.Repositories.Interfaces
 {
+    //интерфейс для базового репозитория
     public interface IBaseRepository<TDbModel> where TDbModel : BaseModel
     {
         public List<TDbModel> GetAll();

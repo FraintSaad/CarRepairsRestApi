@@ -4,14 +4,17 @@ using CarRepairsRestApi.Repositories.Interfaces;
 
 namespace CarRepairsRestApi.Repositories.Implimentations
 {
+    // Базовый репозиторий для моделей, наследующих BaseModel
     public class BaseRepository<TDbModel> : IBaseRepository<TDbModel> where TDbModel : BaseModel
     {
         private ApplicationContext Context { get; set; }
+
         public BaseRepository(ApplicationContext context)
         {
             Context = context;
         }
 
+        // Создание модели
         public TDbModel Create(TDbModel model)
         {
             Context.Set<TDbModel>().Add(model);
@@ -19,6 +22,7 @@ namespace CarRepairsRestApi.Repositories.Implimentations
             return model;
         }
 
+        // Удаление модели по ID
         public void Delete(Guid id)
         {
             var toDelete = Context.Set<TDbModel>().FirstOrDefault(m => m.Id == id);
@@ -26,11 +30,13 @@ namespace CarRepairsRestApi.Repositories.Implimentations
             Context.SaveChanges();
         }
 
+        // Получение всех моделей
         public List<TDbModel> GetAll()
         {
             return Context.Set<TDbModel>().ToList();
         }
 
+        // Обновление модели
         public TDbModel Update(TDbModel model)
         {
             var toUpdate = Context.Set<TDbModel>().FirstOrDefault(m => m.Id == model.Id);
@@ -43,6 +49,7 @@ namespace CarRepairsRestApi.Repositories.Implimentations
             return toUpdate;
         }
 
+        // Получение модели по ID
         public TDbModel Get(Guid id)
         {
             return Context.Set<TDbModel>().FirstOrDefault(m => m.Id == id);

@@ -18,12 +18,14 @@ namespace CarRepairsRestApi.Controllers
             Documents = document;
         }
 
+        // Получение списка всех документов
         [HttpGet]
         public JsonResult Get()
         {
             return new JsonResult(Documents.GetAll());
         }
 
+        // Вызов сервиса ремонта и возвращение сообщения об успехе
         [HttpPost]
         public JsonResult Post()
         {
@@ -31,11 +33,13 @@ namespace CarRepairsRestApi.Controllers
             return new JsonResult("Work was successfully done");
         }
 
+        // Обновление документа
         [HttpPut]
         public JsonResult Put(Document doc)
         {
             bool success = true;
             var document = Documents.Get(doc.Id);
+
             try
             {
                 if (document != null)
@@ -55,6 +59,7 @@ namespace CarRepairsRestApi.Controllers
             return success ? new JsonResult($"Update successful {document.Id}") : new JsonResult("Update was not successful");
         }
 
+        // Удаление документа по ID
         [HttpDelete]
         public JsonResult Delete(Guid id)
         {
