@@ -7,57 +7,66 @@ namespace CarRepairsRestApi.Services.Implimentations
     // Сервис, отвечающий за выполнение работы
     public class RepairService : IRepairService
     {
-        // Инъекция зависимостей для репозиториев
-        private IBaseRepository<Document> Documents { get; set; }
-        private IBaseRepository<Car> Cars { get; set; }
-        private IBaseRepository<Worker> Workers { get; set; }
+        private readonly IBaseRepository<Document> _documents;
+        private readonly IBaseRepository<Car> _cars;
+        private readonly IBaseRepository<Worker> _workers;
 
-        // Конструктор, инициализирующий сервисы
-        public RepairService(IBaseRepository<Document> documents, IBaseRepository<Car> cars, IBaseRepository<Worker> workers)
+        // Инъекция зависимостей через конструктор
+        public RepairService(
+            IBaseRepository<Document> documents,
+            IBaseRepository<Car> cars,
+            IBaseRepository<Worker> workers)
         {
-            Documents = documents;
-            Cars = cars;
-            Workers = workers;
+            _documents = documents;
+            _cars = cars;
+            _workers = workers;
         }
 
         // Метод для выполнения работы
         public void Work()
         {
-            // Генерация случайных данных для автомобиля, работника и документа
             var rand = new Random();
             var carId = Guid.NewGuid();
             var workerId = Guid.NewGuid();
 
             // Создание автомобиля
-            Cars.Create(new Car
+            var car = new Car
             {
                 Id = carId,
-                Name = $"Car{rand.Next()}",
-                Number = $"{rand.Next()}"
-            });
+                Name = $"Car{rand.Next(1000, 9999)}",
+                Number = $"{rand.Next(100000, 999999)}"
+            };
+            _cars.Create(car);
 
             // Создание работника
-            Workers.Create(new Worker
+            var worker = new Worker
             {
                 Id = workerId,
-                Name = $"Worker{rand.Next()}",
-                Position = $"Position{rand.Next()}",
-                Telephone = $"8916{rand.Next()}{rand.Next()}{rand.Next()}{rand.Next()}{rand.Next()}{rand.Next()}{rand.Next()}"
-            });
+                Name = $"Worker{rand.Next(1000, 9999)}",
+                Position = $"Position{rand.Next(1, 10)}",
+                Telephone = $"8916{rand.Next(1000000, 9999999)}"
+            };
+            _workers.Create(worker);
 
             // Получение автомобиля и работника по ID
-            var car = Cars.Get(carId);
-            var worker = Workers.Get(workerId);
+            car = _cars.Get(carId);
+            worker = _workers.Get(workerId);
+
+            if (car == null || worker == null)
+            {
+                // Логика обработки случая, когда автомобиль или работник не найдены
+                throw new InvalidOperationException("Car or Worker not found.");
+            }
 
             // Создание документа
-            Documents.Create(new Document
+            var document = new Document
             {
                 CarId = car.Id,
                 WorkerId = worker.Id,
                 Car = car,
                 Worker = worker
-            });
-
+            };
+            _documents.Create(document);
         }
     }
 }

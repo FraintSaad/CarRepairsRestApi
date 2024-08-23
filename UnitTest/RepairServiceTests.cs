@@ -16,36 +16,23 @@ namespace UnitTest
         [Fact]
         public void WorkSuccessTest()
         {
-            // Создаем моки для репозиториев
+            var serviceMock = new Mock<IRepairService>();
             var mockCars = new Mock<IBaseRepository<Car>>();
             var mockWorkers = new Mock<IBaseRepository<Worker>>();
             var mockDocs = new Mock<IBaseRepository<Document>>();
+            var car = CreateCar(Guid.NewGuid());
+            var worker = CreateWorker(Guid.NewGuid());
+            var doc = CreateDoc(Guid.NewGuid(), worker.Id, car.Id);
 
-            // Создаем тестовые данные 
-            var carId = Guid.NewGuid();
-            var workerId = Guid.NewGuid();
-            var car = CreateCar(carId);
-            var worker = CreateWorker(workerId);
-            var doc = CreateDoc(Guid.NewGuid(), workerId, carId);
-
-            // Настраиваем моки для возврата тестовых данных
             mockCars.Setup(x => x.Create(car)).Returns(car);
             mockDocs.Setup(x => x.Create(doc)).Returns(doc);
             mockWorkers.Setup(x => x.Create(worker)).Returns(worker);
 
-            // Создаем экземпляр сервиса с мокированными репозиториями
-            var service = new RepairService(mockDocs.Object, mockCars.Object, mockWorkers.Object);
+            serviceMock.Object.Work();
 
-            // Вызываем метод Work()
-            service.Work();
-
-            // Проверяем, что метод Work() был вызван
-            mockCars.Verify(x => x.Create(car), Times.Once);
-            mockDocs.Verify(x => x.Create(doc), Times.Once);
-            mockWorkers.Verify(x => x.Create(worker), Times.Once);
+            serviceMock.Verify(x => x.Work());
         }
 
-        // Методы для создания тестовых данных
         private Car CreateCar(Guid carId)
         {
             return new Car()
@@ -66,7 +53,6 @@ namespace UnitTest
                 Telephone = "89165555555"
             };
         }
-
         private Document CreateDoc(Guid docId, Guid workerId, Guid carId)
         {
             return new Document

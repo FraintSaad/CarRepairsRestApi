@@ -1,4 +1,4 @@
-﻿using CarRepairsRestApi.Database;
+using CarRepairsRestApi.Database;
 using CarRepairsRestApi.Models;
 using CarRepairsRestApi.Repositories.Implimentations;
 using CarRepairsRestApi.Repositories.Interfaces;
@@ -6,6 +6,8 @@ using CarRepairsRestApi.Services.Implimentations;
 using CarRepairsRestApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace CarRepairsRestApi
 {
@@ -64,5 +66,19 @@ namespace CarRepairsRestApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "CarRepairsRestApi v1");
             });
         }
+
+        // The Main method that serves as the entry point for the application.
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        // A helper method to create the IHostBuilder for the application.
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
     }
 }
